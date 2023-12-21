@@ -21,8 +21,8 @@ jobs:
         id: image-version
         uses: paulhatch/semantic-version@v4.0.3
         with:
-          major_pattern: "(MAJOR-DB)"
-          minor_pattern: "(MINOR-DB)"
+          major_pattern: "major:"
+          minor_pattern: "feat:"
           format: "${major}.${minor}.${patch}-prerelease${increment}"
 
       - name: Authenticate with Docker Hub
