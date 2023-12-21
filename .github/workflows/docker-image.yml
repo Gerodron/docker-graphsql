@@ -7,36 +7,41 @@ on:
     branches: [ "main" ]
 
 jobs:
-
   build:
 
     runs-on: ubuntu-latest
 
     steps:
-    - name: Checkout code
-      uses: actions/checkout@v3
-      with:
-        fetch-depth: 0
-
-    - name : Authentication Docker Hub
-      env: 
-        DOCKER_USER: ${{secrets.DOCKER_USER}}
-        DOCKER_PASSWORD: ${{secrets.DOCKER_PASSWORD}}
-      run: |
-        echo "Logging in to Docker Hub"
-        docker login -u $DOCKER_USER -p $DOCKER_PASSWORD
-        echo "Logged in to Docker Hub."
-
-    - name: Build Docker Image
-      run : |
-        docker build -t gerodron/graphsql .
-        docker build -t gerodron/graphsql:0.0.4 .
+      - name: Checkout code
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
         
-    - name: Push Docker Image
-      run : |
-        docker push gerodron/graphsql
-        docker push gerodron/graphsql:0.0.4
+      - name: Determine database version
+        id: image-version
+        uses: paulhatch/semantic-version@v4.0.3
+        with:
+          major_pattern: "(MAJOR-DB)"
+          minor_pattern: "(MINOR-DB)"
+          format: "${major}.${minor}.${patch}-prerelease${increment}"
 
-    
-      
-      
+      - name: Authenticate with Docker Hub
+        env:
+          DOCKER_USER: ${{secrets.DOCKER_USER}}
+          DOCKER_PASSWORD: ${{secrets.DOCKER_PASSWORD}}
+          NEW_VERSION: ${{steps.image-version.outputs.version}}
+        run: |
+          echo "Logging in to Docker Hub"
+          docker login -u ${{ env.DOCKER_USER }} -p ${{ env.DOCKER_PASSWORD }}
+          echo "New version: $NEW_VERSION"
+          echo "Logged in to Docker Hub."
+
+      # - name: Build Docker image
+      #   run: |
+      #     docker build -t gerodron/graphsql .
+      #     docker build -t gerodron/graphsql:0.0.4 .
+
+      # - name: Push Docker image
+      #   run: |
+      #     docker push gerodron/graphsql
+      #     docker push gerodron/graphsql:0.0.4
