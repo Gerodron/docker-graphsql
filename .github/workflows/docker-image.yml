@@ -29,7 +29,7 @@ jobs:
 
     - name: Build Docker Image
       run : |
-        docker build -t gerodron/graphsql.
+        docker build -t gerodron/graphsql .
         docker build -t gerodron/graphsql:0.0.4 .
         
     - name: Push Docker Image
