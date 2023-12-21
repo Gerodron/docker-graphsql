@@ -34,8 +34,9 @@ jobs:
         
     - name: Push Docker Image
       run : |
+        docker push gerodron/graphsql
         docker push gerodron/graphsql:0.0.4
-        docker push gerodron/graphsql:0.0.4/graphsql
+
     
       
       
